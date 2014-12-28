@@ -16,7 +16,7 @@ $ meteor add selaias:meteor-simpleweather
 Just Place a reference to the weather template
 
 ```js
-{{>simpleweather}}
+{{>simpleWeather}}
 ```
 
 and set your options
