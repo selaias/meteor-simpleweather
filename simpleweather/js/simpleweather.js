@@ -28,7 +28,16 @@ Weather = {
     var now = new Date();
     var weatherUrl = 'https://query.yahooapis.com/v1/public/yql?format=json&rnd='+now.getFullYear()+now.getMonth()+now.getDay()+now.getHours()+'&diagnostics=true&callback=?&q=';
     if(options.location !== '') {
-      weatherUrl += 'select * from weather.forecast where woeid in (select woeid from geo.placefinder where text="'+options.location+'" and gflags="R" limit 1) and u="'+options.unit+'"';
+       /* If latitude/longitude coordinates, need to format a little different. */
+        var location = '';
+        if(/^(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)$/.test(options.location)) {
+          location = '(' + options.location + ')';
+        } else {
+          location = options.location;
+        }
+
+        weatherUrl += 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="' + location + '") and u="' + options.unit + '"';
+      //weatherUrl += 'select * from weather.forecast where woeid in (select woeid from geo.placefinder where text="'+options.location+'" and gflags="R" limit 1) and u="'+options.unit+'"';
     } else if(options.woeid !== '') {
       weatherUrl += 'select * from weather.forecast where woeid='+options.woeid+' and u="'+options.unit+'"';
     } else {
@@ -39,7 +48,8 @@ Weather = {
     $.getJSON(
       encodeURI(weatherUrl),
       function(data) {
-        if(data !== null && data.query !== null && data.query.results !== null && data.query.results.channel.description !== 'Yahoo! Weather Error') {
+
+        if(data && data.query && data.query.results && data.query.results.channel.description !== 'Yahoo! Weather Error') {
           var result = data.query.results.channel,
               weather = {},
               forecast,
@@ -52,8 +62,8 @@ Weather = {
               } else {
                 return Math.round((9.0/5.0)*temp+32.0);
               }
-            }
-          
+            };
+            
           weather.title = result.item.title;
           weather.temp = result.item.condition.temp;
           weather.code = result.item.condition.code;
@@ -122,8 +132,4 @@ Weather = {
     );
     return this;
   }
-}
-
-
-
-
+};
