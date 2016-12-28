@@ -1,7 +1,7 @@
 Package.describe({
   name: 'selaias:meteor-simpleweather',
   summary: ' Wrapper for simpleWeather api for jQuery (http://simpleweatherjs.com/) ',
-  version: '0.7.0',
+  version: '0.7.1',
   git: ' https://github.com/selaias/meteor-simpleweather.git'
 });
 
@@ -25,7 +25,7 @@ Package.onUse(function (api) {
   //template
   api.addFiles("weather.html", 'client');
   api.addFiles("weather.js", 'client');
-  
+
   api.export('Weather', 'client');
 
 });
